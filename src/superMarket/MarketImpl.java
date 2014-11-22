@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes.Name;
 
 @SuppressWarnings("serial")
 public class MarketImpl extends UnicastRemoteObject implements Market {
@@ -48,6 +49,9 @@ public class MarketImpl extends UnicastRemoteObject implements Market {
 		ItemImpl item = new ItemImpl(name, price);
 		itemList.add(item);
 		return item;
+	}
+	public String getUser(){
+		return user;
 	}
 
 }

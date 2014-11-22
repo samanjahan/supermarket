@@ -3,15 +3,16 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
 import Bank.RejectedException;
 
 @SuppressWarnings("serial")
 public class MarketplaceImpl extends UnicastRemoteObject implements Marketplace {
-	
+	private  CallBack client;
 	private String marketPlaceName;
 	private Map<String, Market> markets = new HashMap<String, Market>();
+	private Map<String,CallBack> wisheList = new HashMap<String, CallBack>();
 
 	protected MarketplaceImpl(String marketPlaceName) throws RemoteException {
 		super();
@@ -32,6 +33,7 @@ public class MarketplaceImpl extends UnicastRemoteObject implements Marketplace 
 		marketImpl = new MarketImpl(name);
 		markets.put(name, marketImpl);
 		System.out.println("The " + marketImpl + "has been created for " + name);
+	//	chechWish();
 		return marketImpl;
 	}
 
@@ -94,5 +96,36 @@ public class MarketplaceImpl extends UnicastRemoteObject implements Marketplace 
 			}
 		}
 		return toppings;
+	}
+	
+	public void chechWish() throws RemoteException{
+		if(!wisheList.isEmpty()){
+			for( String keyItem : wisheList.keySet()){
+				client  = wisheList.get(keyItem);
+				String[] itemNameList = keyItem.split(" ");
+				String itemName = itemNameList[0].toString();
+				
+				if(!markets.isEmpty()){
+					for(String key : markets.keySet()){
+						Market market = markets.get(key);
+						for(int i = 0; i < market.listItem().size(); ++i){
+							Float price = Float.valueOf(itemNameList[1]);
+							if(market.listItem().get(i).getName().toString().equals(itemName) && market.listItem().get(i).getPrice() <= price){
+								wisheList.remove(key);
+								client.notifyMe(market.getUser().toString(), market.listItem().get(i).getName().toString());
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	@Override
+	public void wish(String name, String price, CallBack client) throws RemoteException {
+		// TODO Auto-generated method stub 
+		String item = name + " " + price;
+		wisheList.put(item , client);
 	}
 }

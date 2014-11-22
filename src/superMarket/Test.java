@@ -12,6 +12,7 @@ public class Test {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("hej");
+		Test test = new Test();
 	/*	MarketImpl mk = new MarketImpl("saman");
 		mk.createItem("Camera", 300);
 		mk.createItem("Video", 100);
@@ -42,6 +43,13 @@ public class Test {
 		for(String marketHolder : mkp.listMarket()){
 			System.out.println(marketHolder);
 		}
+		String n = "tv";
+		String b = "200";
+		String t = n + " " + b;
+		System.out.println(t);
+		String[] g = t.split(" ");
+		System.out.println(g[0].toString());
+		
 		
 	}
 

@@ -10,4 +10,6 @@ public interface Marketplace extends Remote {
 	public String[] listMarket() throws RemoteException;
 	public String[] listAllMarket() throws RemoteException;
 	public ArrayList<String> listAllItem() throws RemoteException;
+	public void wish (String name , String price , CallBack client) throws RemoteException;
+	public void chechWish() throws RemoteException;
 }
