@@ -7,10 +7,19 @@ import java.io.InputStreamReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.StringTokenizer;
 
-public class Client {
-	private static final String USAGE = "java marketrmi.Server <superMarket_rmi_url>";
+@SuppressWarnings("serial")
+public class Client extends UnicastRemoteObject implements CallBack{
+	protected Client() throws RemoteException {
+		
+		super();
+		
+		
+		// TODO Auto-generated constructor stub
+	}
+	
 	private static final String DEFAULT_MarketPlace_NAME = "Blocket";
 	static Marketplace marketPlace;
 	static Market market;
@@ -22,7 +31,7 @@ public class Client {
 	private static List <String> listWord = new ArrayList<String>();
 
 	static enum CommandName {
-		newMarket, deleteMarket, showAllItem, addItem, deleteItem, quit, help, list;
+		newMarket, deleteMarket, showAllItem, addItem, deleteItem, quit, help, list, wish;
 	};
 	
 	private static int getCommand(String userInput){
@@ -55,15 +64,19 @@ public class Client {
 		}
 		if(userInput.equals("list")){
 			return 8;
-		}else{
+		}if(userInput.equals("wish")){
+			itemName = listWord.get(1);
+			itemPrice = listWord.get(2);
 			return 0;
-		}		
+		}
+		return 10;
 	}
 
 	private static boolean isConnected;
 
 	public static void main(String[] args) throws IOException {
 		clientname = null;
+		
 		
 		try {
 			try {
@@ -76,6 +89,9 @@ public class Client {
 			System.out.println("The runtime failed: " + e.getMessage());
 			System.exit(0);
 		}
+		
+	//	marketPlace.registerClient(c);
+		
 		System.out.println("Connected to SuperMarket: " + MarketPlaceName);
 		isConnected = true;
 		BufferedReader consoleIn = new BufferedReader(
@@ -120,6 +136,7 @@ public class Client {
 					market = marketPlace.getMarket(clientname.toString());
 					market.createItem(itemName, Float.parseFloat(itemPrice));
 					listWord.clear();
+					marketPlace.chechWish();
 					break;
 				case 5:
 					market.deleteItem(itemName);
@@ -142,10 +159,20 @@ public class Client {
 						}
 					}
 					listWord.clear();
-					
-					break;				
+					break;	
+				case 0 :
+					Client c = new Client();
+					marketPlace.wish(itemName, itemPrice,c);
+					listWord.clear();
 			}
 			
 		}
+	}
+
+	@Override
+	public void notifyMe(String user, String itemName) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println("User " +  user + " has " + itemName + " " + "to sells");
+		
 	}
 }
