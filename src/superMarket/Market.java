@@ -9,4 +9,5 @@ public interface Market extends Remote {
 	public boolean deleteItem(String name) throws RemoteException;
 	public Item createItem(String name,float price) throws RemoteException;
 	public boolean deleteAll() throws RemoteException;
+	public Float getPrice(String name) throws RemoteException;
 }

@@ -28,10 +28,11 @@ public class Client extends UnicastRemoteObject implements CallBack{
 	private static String clientname;
 	private static String itemName;
 	private static String itemPrice;
+	private static String userBuyFrom;
 	private static List <String> listWord = new ArrayList<String>();
 
 	static enum CommandName {
-		newMarket, deleteMarket, showAllItem, addItem, deleteItem, quit, help, list, wish;
+		newMarket, deleteMarket, showAllItem, addItem, deleteItem, quit, help, listAllMarket, wish,buy,showMyItem;
 	};
 	
 	private static int getCommand(String userInput){
@@ -62,14 +63,22 @@ public class Client extends UnicastRemoteObject implements CallBack{
 		if(userInput.equals("help")){
 			return 7;
 		}
-		if(userInput.equals("list")){
+		if(userInput.equals("listAllMarket")){
 			return 8;
 		}if(userInput.equals("wish")){
 			itemName = listWord.get(1);
 			itemPrice = listWord.get(2);
-			return 0;
+			return 9;
 		}
-		return 10;
+		if(userInput.equals("buy")){
+			itemName = listWord.get(1);
+			userBuyFrom = listWord.get(2);
+			return 10;
+		}
+		if(userInput.equals("showMyItem")){
+			return 11;
+		}
+		return 12;
 	}
 
 	private static boolean isConnected;
@@ -89,8 +98,6 @@ public class Client extends UnicastRemoteObject implements CallBack{
 			System.out.println("The runtime failed: " + e.getMessage());
 			System.exit(0);
 		}
-		
-	//	marketPlace.registerClient(c);
 		
 		System.out.println("Connected to SuperMarket: " + MarketPlaceName);
 		isConnected = true;
@@ -160,9 +167,29 @@ public class Client extends UnicastRemoteObject implements CallBack{
 					}
 					listWord.clear();
 					break;	
-				case 0 :
+				case 9 :
 					Client c = new Client();
 					marketPlace.wish(itemName, itemPrice,c);
+					listWord.clear();
+					break;
+				case 10:
+					marketPlace.buy(itemName, clientname, userBuyFrom);
+					listWord.clear();
+					break;
+				case 11:
+					String item = marketPlace.listMyItem(clientname);
+					String[] items = item.split(" ");
+					if(items[0].length() != 0){
+						for(int i = 0 ; i < items.length; ++i){
+							System.out.println(items[i]);
+						}
+					}else{
+						System.out.println("You dont hav any item");
+					}
+					listWord.clear();
+					break;
+				case 12:
+					System.out.println("Illegal comment");
 					listWord.clear();
 			}
 			
