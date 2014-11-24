@@ -4,12 +4,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Attributes.Name;
 
 @SuppressWarnings("serial")
 public class MarketImpl extends UnicastRemoteObject implements Market {
 	String user;
 	private List<Item> itemList = new ArrayList<Item>();
+	Float price;
 
 	protected MarketImpl(String user) throws RemoteException {		
 		super();
@@ -52,6 +52,20 @@ public class MarketImpl extends UnicastRemoteObject implements Market {
 	}
 	public String getUser(){
 		return user;
+	}
+	
+	public Float getPrice(String name) throws RemoteException{
+		if(!itemList.isEmpty()){
+			for(int i = 0 ; i < itemList.size(); ++i){
+				String itemName = itemList.get(i).getName().toString();
+					if(itemName.equals(name)){
+						price = itemList.get(i).getPrice();
+						return price;
+					}
+			}
+		}
+		return null;
+		
 	}
 
 }

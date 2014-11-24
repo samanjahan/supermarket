@@ -1,10 +1,13 @@
 package superMarket;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import Bank.Account;
+import Bank.Bank;
 import Bank.RejectedException;
 
 @SuppressWarnings("serial")
@@ -127,5 +130,62 @@ public class MarketplaceImpl extends UnicastRemoteObject implements Marketplace 
 		// TODO Auto-generated method stub 
 		String item = name + " " + price;
 		wisheList.put(item , client);
+	}
+
+	@Override
+	public void buy(String itemName, String userWillBuy ,String userWillSell ) throws RemoteException {
+		// TODO Auto-generated method stub
+		Market marketWill = getMarket(userWillBuy);
+		Market marketBuyFrom = getMarket(userWillSell);
+		
+		if(marketWill != null && marketBuyFrom != null){
+			Float price = marketBuyFrom.getPrice(itemName);
+			if(chekBank(userWillBuy, userWillSell,price)){
+				marketBuyFrom.deleteItem(itemName);
+				marketWill.createItem(itemName, price);
+			}
+		}
+	}
+
+	@Override
+	public String listMyItem(String userName) throws RemoteException {
+		// TODO Auto-generated method stub
+		Market market = getMarket(userName);
+		StringBuilder item =new StringBuilder();
+		if(market != null){
+			for(int i = 0 ; i <  market.listItem().size(); ++i){
+				item.append(market.listItem().get(i).getName() + " ");
+			}			
+		}
+		return item.toString();
+	}
+	
+	public boolean chekBank(String userWillBuy, String userWillSell, Float price) throws RemoteException{
+		Bank bank = null;
+		Account accountWillSell;
+		Account accountWillBuy;
+		String DEFAULT_BANK_NAME = "Nordea";
+		try {
+			try {
+				LocateRegistry.getRegistry(1099).list();
+			} catch (RemoteException e) {
+				LocateRegistry.createRegistry(1099);
+			}
+			bank = (Bank) Naming.lookup(DEFAULT_BANK_NAME);
+		} catch (Exception e) {
+			System.out.println("The runtime failed: " + e.getMessage());
+			System.exit(0);
+		}
+		accountWillSell = bank.getAccount(userWillSell);
+		accountWillBuy = bank.getAccount(userWillBuy);
+		if(accountWillBuy != null && accountWillSell != null){
+			if(accountWillBuy.getBalance() >= price){
+				accountWillBuy.withdraw(price);
+				accountWillSell.deposit(price);
+			}else{
+				return false;
+			}
+		}
+		return true;
 	}
 }
