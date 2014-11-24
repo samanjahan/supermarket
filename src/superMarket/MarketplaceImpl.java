@@ -133,18 +133,19 @@ public class MarketplaceImpl extends UnicastRemoteObject implements Marketplace 
 	}
 
 	@Override
-	public void buy(String itemName, String userWillBuy ,String userWillSell ) throws RemoteException {
+	public synchronized boolean buy(String itemName, String userWillBuy ,String userWillSell) throws RemoteException {
 		// TODO Auto-generated method stub
 		Market marketWill = getMarket(userWillBuy);
 		Market marketBuyFrom = getMarket(userWillSell);
-		
 		if(marketWill != null && marketBuyFrom != null){
 			Float price = marketBuyFrom.getPrice(itemName);
 			if(chekBank(userWillBuy, userWillSell,price)){
 				marketBuyFrom.deleteItem(itemName);
 				marketWill.createItem(itemName, price);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override

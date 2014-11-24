@@ -173,7 +173,11 @@ public class Client extends UnicastRemoteObject implements CallBack{
 					listWord.clear();
 					break;
 				case 10:
-					marketPlace.buy(itemName, clientname, userBuyFrom);
+					if(marketPlace.buy(itemName, clientname, userBuyFrom)){
+						System.out.println("buy is succeeded");
+					}else{
+						System.out.println("buy is not succeeded");
+					}
 					listWord.clear();
 					break;
 				case 11:

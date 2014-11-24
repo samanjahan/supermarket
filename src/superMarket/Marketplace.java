@@ -13,5 +13,5 @@ public interface Marketplace extends Remote {
 	public void wish (String name , String price , CallBack client) throws RemoteException;
 	public void chechWish() throws RemoteException;
 	public String listMyItem(String userName) throws RemoteException;
-	public void buy (String itemName, String userwillBuy ,String userBuyFrom ) throws RemoteException;
+	public boolean buy (String itemName, String userWillBuy ,String userWillSell) throws RemoteException;
 }

@@ -3,9 +3,8 @@ package superMarket;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ItemImpl extends UnicastRemoteObject implements Item{
-	
-	
+@SuppressWarnings("serial")
+public class ItemImpl extends UnicastRemoteObject implements Item{	
 	String name;
 	float price;
 	public ItemImpl(String name, float price) throws RemoteException {
