@@ -174,9 +174,9 @@ public class Client extends UnicastRemoteObject implements CallBack{
 					break;
 				case 10:
 					if(marketPlace.buy(itemName, clientname, userBuyFrom)){
-						System.out.println("buy is succeeded");
+						System.out.println("buy has succeeded");
 					}else{
-						System.out.println("buy is not succeeded");
+						System.out.println("buy has not succeeded");
 					}
 					listWord.clear();
 					break;
@@ -188,12 +188,12 @@ public class Client extends UnicastRemoteObject implements CallBack{
 							System.out.println(items[i]);
 						}
 					}else{
-						System.out.println("You dont hav any item");
+						System.out.println("You dont have any item");
 					}
 					listWord.clear();
 					break;
 				case 12:
-					System.out.println("Illegal comment");
+					System.out.println("Illegal command");
 					listWord.clear();
 			}
 			
@@ -203,7 +203,7 @@ public class Client extends UnicastRemoteObject implements CallBack{
 	@Override
 	public void notifyMe(String user, String itemName) throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("User " +  user + " has " + itemName + " " + "to sells");
+		System.out.println("User " +  user + " has " + itemName + " " + "to sell");
 		
 	}
 }
